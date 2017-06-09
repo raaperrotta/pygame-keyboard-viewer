@@ -9,7 +9,7 @@ win_height = 400
 margin = 0.125
 keyboard = [
     ['esc'] + ['F{}'.format(x+1) for x in range(12)] + ['eject'],
-    ['```'] + ['{}'.format(x+1) for x in range(9)] + ['0', '-', '=', ('delete', 1.5)],
+    ['`'] + ['{}'.format(x+1) for x in range(9)] + ['0', '-', '=', ('delete', 1.5)],
     [('tab', 1.5), 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'],
     [('caps', 1.8), 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', ('enter', 1.8)],
     [('shift', 2), 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', ('shift', 2)],
