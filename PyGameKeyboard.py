@@ -147,12 +147,15 @@ while running:
     actual_fps = clock.get_fps()
 
     events = pg.event.get()
-    for event in pg.event.get():
+    for event in events:
         if event.type == pg.QUIT:
+            running = False
+        if (event.type == pg.KEYDOWN and
+                event.key == K_w and
+                pg.key.get_mods() & KMOD_META):
             running = False
 
     pressed = pg.key.get_pressed()
-    # shifted = pressed[K_RSHIFT] or pressed[K_LSHIFT]
     shifted = pg.key.get_mods() & KMOD_SHIFT
 
     if draw_by_event:
