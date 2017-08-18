@@ -1,14 +1,14 @@
 #!python3
 import pygame as pg
-from pygame import gfxdraw
-from pygame.locals import *
-from threading import Thread, Timer
+from pygame.locals import K_w, KMOD_META
+from threading import Timer
 from time import time
+
 
 class CounterTask():
 
     def __init__(self, period):
-        self.count = 0
+        self.count = -1
         self.period = period
         self.timer = None
         self.run()
@@ -24,19 +24,21 @@ class CounterTask():
 
 
 class Display():
+
     def __init__(self, rates):
         self.screen_width = 300
-        self.screen_height = 100
+        self.screen_height = 150
         self.update_rate = 0.02
         self.start = time()
         self.screen = pg.display.set_mode((self.screen_width, self.screen_height))
         pg.display.set_caption("Threads!")  # The window title
         pg.init()  # must be called before pg.font.SysFont()
+        self.font = pg.font.SysFont("monospace", 28)
 
         self.tasks = []
         if rates:
             dx = self.screen_width / len(rates)
-            x = dx/2
+            x = dx / 2
             for r in rates:
                 self.tasks.append((CounterTask(r), x))
                 x += dx
@@ -44,16 +46,30 @@ class Display():
     def update(self):
         self.screen.fill((50, 50, 50))
 
-        font = pg.font.SysFont("monospace", 16)
-        label = font.render("{:.2f}".format(time()-self.start), 1, (250, 250, 250))
+        label = self.font.render("{:.2f}".format(time() - self.start),
+                                 1, (250, 250, 250))
         r = label.get_rect()
         self.screen.blit(label, [10, 10])
 
+        y = (self.screen_height - 10) / 3
+        y = [20 + y, 20 + 2 * y]
+
         for t, x in self.tasks:
-            font = pg.font.SysFont("monospace", 32)
-            label = font.render(str(t.count), 1, (250, 250, 250))
+            expected = int((time() - self.start) // t.period)
+            if t.count == expected:
+                color = (50, 250, 50)  # green for good
+            else:
+                color = (250, 50, 50)  # red for bad
+            # Draw the counter from the task
+            label = self.font.render(str(t.count), 1, color)
             r = label.get_rect()
-            pos = [x - r.width/2., self.screen_height/2 - r.height/2.]
+            pos = [x - r.width / 2, y[0] - r.height / 2]
+            pos = [int(round(p)) for p in pos]
+            self.screen.blit(label, pos)
+            # Draw the expected value based on the rate and current time
+            label = self.font.render(str(expected), 1, (250, 250, 250))
+            r = label.get_rect()
+            pos = [x - r.width / 2, y[1] - r.height / 2]
             pos = [int(round(p)) for p in pos]
             self.screen.blit(label, pos)
 
